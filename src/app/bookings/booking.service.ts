@@ -39,24 +39,26 @@ export class BookingService {
     dateTo: Date
   ) {
     let generatedId: string;
-    const newBooking = new Booking(
-      Math.random().toString(),
-      placeId,
-      this.authService.userId,
-      placeTitle,
-      placeImage,
-      firstName,
-      lastName,
-      guestNumber,
-      dateFrom,
-      dateTo
-    );
-    return this.http
-      .post<{ name: string }>(
-        'https://ion-angular-course-4a31b.firebaseio.com/bookings.json',
-        { ...newBooking, id: null }
-      )
-      .pipe(
+    let newBooking;
+    return this.authService.userId.pipe(take(1), switchMap(userId => {
+      newBooking = new Booking(
+        Math.random().toString(),
+        placeId,
+        userId,
+        placeTitle,
+        placeImage,
+        firstName,
+        lastName,
+        guestNumber,
+        dateFrom,
+        dateTo
+      );
+      return this.http
+        .post<{ name: string }>(
+          'https://ion-angular-course-4a31b.firebaseio.com/bookings.json',
+          { ...newBooking, id: null }
+        );
+    }),
         switchMap(resData => {
           generatedId = resData.name;
           return this.bookings;

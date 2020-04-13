@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { PlacesService } from '../places.service';
 import { Place } from '../place.model';
 import { AuthService } from '../../auth/auth.service';
+import { take, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-discover',
@@ -27,18 +28,20 @@ export class DiscoverPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.placesSub = this.placesService.places.subscribe(places => {
-      this.loadedPlaces = places;
-      if (this.filter === 'all') {
-        this.relevantPlaces = this.loadedPlaces;
-        this.listedLoadedPlaces = this.relevantPlaces.slice(1);
-      } else {
-        this.relevantPlaces = this.loadedPlaces.filter(
-          place => place.userId !== this.authService.userId
-        );
-        this.listedLoadedPlaces = this.relevantPlaces.slice(1);
-      }
-      console.log(this.listedLoadedPlaces);
+    this.authService.userId.pipe(take(1)).subscribe(userId => {
+      this.placesSub = this.placesService.places.subscribe(places => {
+        this.loadedPlaces = places;
+        if (this.filter === 'all') {
+          this.relevantPlaces = this.loadedPlaces;
+          this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+        } else {
+          this.relevantPlaces = this.loadedPlaces.filter(
+            place => place.userId !== userId
+          );
+          this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+        }
+        console.log(this.listedLoadedPlaces);
+      });
     });
   }
 
@@ -54,21 +57,18 @@ export class DiscoverPage implements OnInit, OnDestroy {
   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
+    this.authService.userId.subscribe(userId => {
     this.filter = event.detail.value;
     if (this.filter === 'all') {
-      console.log('all');
       this.relevantPlaces = this.loadedPlaces;
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
-      console.log(this.listedLoadedPlaces);
     } else {
-      console.log('bookable');
       this.relevantPlaces = this.loadedPlaces.filter(
-        place => place.userId !== this.authService.userId
+        place => place.userId !== userId
       );
-      console.log(this.authService.userId);
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
-      console.log(this.relevantPlaces);
     }
+    });
   }
 
   ngOnDestroy() {

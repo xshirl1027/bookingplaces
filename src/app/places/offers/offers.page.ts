@@ -5,7 +5,8 @@ import { Subscription } from 'rxjs';
 
 import { PlacesService } from '../places.service';
 import { Place } from '../place.model';
-import { take, switchMap } from 'rxjs/operators';
+import { take, switchMap, map } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-offers',
@@ -17,11 +18,15 @@ export class OffersPage implements OnInit, OnDestroy {
   isLoading = false;
   private placesSub: Subscription;
 
-  constructor(private placesService: PlacesService, private router: Router) {}
+  constructor(private placesService: PlacesService, private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
-    this.placesSub = this.placesService.places.subscribe(places => {
-      this.offers = places;
+    this.authService.userId.subscribe(userId => {
+      this.placesSub = this.placesService.places.subscribe(places => {
+        console.log(userId);
+        console.log(places);
+        this.offers = places.filter((place) => place.userId === userId);
+      });
     });
   }
 
@@ -35,7 +40,6 @@ export class OffersPage implements OnInit, OnDestroy {
   onEdit(offerId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
     this.router.navigate(['/', 'places', 'tabs', 'offers', 'edit', offerId]);
-    console.log('Editing item', offerId);
   }
 
   onDelete(offerId: string, slidingItem: IonItemSliding) {

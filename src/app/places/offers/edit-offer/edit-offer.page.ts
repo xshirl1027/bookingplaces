@@ -127,7 +127,6 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
         this.place.price = this.form.value.price;
         this.place.location = this.form.value.location;
         this.place.description = this.form.value.description;
-        console.log('edited place ' + this.place);
         this.placesService
           .updatePlace(
             this.place
