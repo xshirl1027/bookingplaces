@@ -7,7 +7,10 @@ To test the application first clone the project and run the following commands:
   * ionic capacitor add android 
   * ionic capacitor run android.
   
-  
+
+# Login Screen
 ![Image of login](https://github.com/xshirl1027/bookingplaces/blob/master/images/login-screen.png)
+# Home Screen
 ![Image of discover tab](https://github.com/xshirl1027/bookingplaces/blob/master/images/places-offered.png)
+# New Offer Pick Location
 ![Image of demo](https://github.com/xshirl1027/bookingplaces/blob/master/images/new-offer-pick-location.png)
