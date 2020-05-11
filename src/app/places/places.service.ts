@@ -48,7 +48,8 @@ interface PlaceData {
   price: number;
   title: string;
   userId: string;
-  location: PlaceLocation
+  location: PlaceLocation;
+  imageDataUrl: string;
 }
 
 @Injectable({
@@ -83,7 +84,8 @@ export class PlacesService {
                   new Date(resData[key].availableFrom),
                   new Date(resData[key].availableTo),
                   resData[key].userId,
-                  resData[key].location
+                  resData[key].location,
+                  resData[key].imageDataUrl
                 )
               );
             }
@@ -112,7 +114,8 @@ export class PlacesService {
             new Date(placeData.availableFrom),
             new Date(placeData.availableTo),
             placeData.userId,
-            placeData.location
+            placeData.location,
+            placeData.imageDataUrl
           );
         })
       );
@@ -124,7 +127,8 @@ export class PlacesService {
     price: number,
     dateFrom: Date,
     dateTo: Date,
-    location: PlaceLocation
+    location: PlaceLocation,
+    imageDataURL: string
   ) {
     let generatedId: string;
     let newPlace: Place;
@@ -143,7 +147,8 @@ export class PlacesService {
           dateFrom,
           dateTo,
           userId,
-          location
+          location,
+          imageDataURL
         );
         return this.http.post<{ name: string }>(
           'https://ion-angular-course-4a31b.firebaseio.com/places.json',

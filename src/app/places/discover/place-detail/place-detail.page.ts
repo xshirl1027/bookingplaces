@@ -84,9 +84,6 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
   }
 
   onBookPlace() {
-    // this.router.navigateByUrl('/places/tabs/discover');
-    // this.navCtrl.navigateBack('/places/tabs/discover');
-    // this.navCtrl.pop();
     this.actionSheetCtrl
       .create({
         header: 'Choose an Action',

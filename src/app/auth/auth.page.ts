@@ -24,8 +24,8 @@ export class AuthPage implements OnInit {
   ) {}
 
   ngOnInit() {}
-  private showAlert(message: string) {
-    this.alertCtrl.create({header: 'Authentication Failed', message: message, buttons: ['okay']})
+  private showAlert(header:string, message: string) {
+    this.alertCtrl.create({header: header, message: message, buttons: ['okay']})
     .then((ctrl) => {
       ctrl.present();
     });
@@ -47,8 +47,16 @@ export class AuthPage implements OnInit {
         authObs.subscribe((resData) => {
           this.isLoading = false;
           loadingEl.dismiss();
-          this.router.navigateByUrl('/places/tabs/discover');
+          if (this.isLogin) {
+            this.router.navigateByUrl('/places/tabs/discover');
+          } else {
+            let header = 'Sign up Successful';
+            let message = 'Back to login page';
+            this.showAlert(header, message);
+            this.isLogin = !this.isLogin;
+          }
         }, error => {
+          let header = "Authentication failed";
           loadingEl.dismiss();
           const code = error.error.error.message;
           let message = 'could not sign up, please try again';
@@ -62,7 +70,7 @@ export class AuthPage implements OnInit {
           if (code === 'INVALID_PASSWORD') {
             message = 'this password is invalid';
           }
-          this.showAlert(message);
+          this.showAlert(header, message);
         });
       });
   }

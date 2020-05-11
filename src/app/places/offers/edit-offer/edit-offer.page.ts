@@ -42,9 +42,6 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(){
 
-    // this.dateFrom.nativeElement.value = this.place.availableFrom.toISOString().toString();
-    // this.dateTo.nativeElement.value = this.place.availableTo.toISOString().toString();
-    
   }
 
   ngOnInit() {
@@ -82,6 +79,10 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
                 validators: [Validators.required]
               }),
               location: new FormControl(this.place.location, {
+                updateOn: 'blur',
+                validators: [Validators.required]
+              }),
+              image: new FormControl(this.place.imageDataUrl, {
                 updateOn: 'blur',
                 validators: [Validators.required]
               })
@@ -127,6 +128,7 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
         this.place.price = this.form.value.price;
         this.place.location = this.form.value.location;
         this.place.description = this.form.value.description;
+        this.place.imageDataUrl = this.form.value.image;
         this.placesService
           .updatePlace(
             this.place
@@ -141,6 +143,11 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
 
   onLocationPicked(location: PlaceLocation) {
     this.form.patchValue({ location: location });
+  }
+  
+  onImagePicked(imageData: string) {
+    console.log("valid image: " + imageData);
+    this.form.patchValue({ image: imageData });
   }
 
   ngOnDestroy() {

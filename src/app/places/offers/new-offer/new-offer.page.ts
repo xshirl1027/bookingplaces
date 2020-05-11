@@ -45,6 +45,10 @@ export class NewOfferPage implements OnInit {
       location: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required]
+      }),
+      image: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required]
       })
     });
   }
@@ -66,7 +70,8 @@ export class NewOfferPage implements OnInit {
             +this.form.value.price,
             new Date(this.form.value.dateFrom),
             new Date(this.form.value.dateTo),
-            this.form.value.location
+            this.form.value.location,
+            this.form.value.image
           )
           .subscribe(() => {
             loadingEl.dismiss();
@@ -76,7 +81,15 @@ export class NewOfferPage implements OnInit {
       });
   }
   
+  onImagePicked(imageData: string) {
+    console.log("valid image");
+    this.form.patchValue({ image: imageData });
+    console.log(this.form.valid);
+  }
+
   onLocationPicked(location: PlaceLocation) {
+    console.log("valid location");
     this.form.patchValue({ location: location });
   }
+  
 }

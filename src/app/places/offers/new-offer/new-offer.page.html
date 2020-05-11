@@ -76,11 +76,11 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-sm="6" offset="2">
-          <app-location-picker (locationPick)="onLocationPicked($event)"></app-location-picker>
+        <ion-col offset-sm="3" size-sm="6">
+          <app-location-picker (locationPick)="onLocationPicked($event)" class="ion-text-center" padding></app-location-picker>
         </ion-col>
-        <ion-col size-sm="6" offset="3">
-          <app-image-picker></app-image-picker>
+        <ion-col size-sm="6" offset-sm="3">
+          <app-image-picker (imagePick)="onImagePicked($event)" class="ion-text-center" padding></app-image-picker>
         </ion-col>
       </ion-row>
     </ion-grid>
