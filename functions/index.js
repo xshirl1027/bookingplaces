@@ -13,13 +13,17 @@ const storage = new Storage({
   projectId: 'YOUR_FIREBASE_PROJECT_ID'
 });
 
-fbAdmin.initializeApp({credential});
+fbAdmin.initializeApp({credential: fbAdmin.credential.cert(require('./ion-angular-course.js'))});
 
 exports.storeImage = functions.https.onRequest((req, res) => {
   return cors(req, res, () => {
     if (req.method !== 'POST') {
       return res.status(500).json({ message: 'Not allowed.' });
     }
+    if(!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')){
+      return res.status(401).json({error: 'Unauthorized!'});
+    }
+    let idToken = req.headers.authorization.split('Bearer ')[1];
     const busboy = new Busboy({ headers: req.headers });
     let uploadData;
     let oldImagePath;
@@ -41,21 +45,21 @@ exports.storeImage = functions.https.onRequest((req, res) => {
         imagePath = oldImagePath;
       }
 
-      console.log(uploadData.type);
-      return storage
-        .bucket('YOUR_FIREBASE_PROJECT_ID.appspot.com')
-        .upload(uploadData.filePath, {
-          uploadType: 'media',
-          destination: imagePath,
-          metadata: {
+      return fbAdmin.auth().verifyIdToken('idToken').then(decodedToken=>{
+        console.log(uploadData.type);
+        return storage
+          .bucket('YOUR_FIREBASE_PROJECT_ID.appspot.com')
+          .upload(uploadData.filePath, {
+            uploadType: 'media',
+            destination: imagePath,
             metadata: {
-              contentType: uploadData.type,
-              firebaseStorageDownloadTokens: id
+              metadata: {
+                contentType: uploadData.type,
+                firebaseStorageDownloadTokens: id
+              }
             }
-          }
-        })
-
-        .then(() => {
+          })
+      }).then(() => {
           return res.status(201).json({
             imageUrl:
               'https://firebasestorage.googleapis.com/v0/b/' +
